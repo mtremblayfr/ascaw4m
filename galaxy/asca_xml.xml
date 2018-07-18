@@ -1,0 +1,205 @@
+<tool id="asca" name="ASCA" version="1.0.0">
+  <description>ASCA does PCA on the averages of the treatment levels for an experimental design</description>
+  
+  <!-- <requirements> -->
+    <!-- <requirement type="package" version="1.1_4">r-batch</requirement> -->
+<!-- %    <requirement type="package" version="1.0">r-MetStaT</requirement> -->
+    <!-- <requirement type="package" version="1.70.0">bioconductor-pcamethods</requirement> -->
+  <!-- </requirements> -->
+
+  <stdio>
+    <exit_code range="1:" level="fatal" />
+  </stdio>
+  
+  <command><![CDATA[
+  Rscript $__tool_directory__/asca_wrapper.R
+  dataMatrix_in "$dataMatrix_in"
+  sampleMetadata_in "$sampleMetadata_in"
+  variableMetadata_in "$variableMetadata_in"
+  factor1 "$factor1"
+  factor2 "$factor2"
+  scaling "$scaling"
+  nPerm "$nPerm"
+  threshold "$threshold"
+
+
+  sampleMetadata_out "$sampleMetadata_out"
+  variableMetadata_out "$variableMetadata_out"
+  figure "$figure"
+  information "$information"
+  ]]></command>    
+  
+  <inputs>
+    <param name="dataMatrix_in" type="data" label="Data matrix file" help="" format="tabular" />
+    <param name="sampleMetadata_in" type="data" label="Sample metadata file" help="" format="tabular" />
+    <param name="variableMetadata_in" type="data" label="Variable metadata file" help="" format="tabular" />
+    <param name="factor1" label="Name of the sampleMetadata column containing the 1st factor for A-SCA" type="text" value="none" help=""/>
+    <param name="factor2" label="Name of the sampleMetadata column containing the 2nd factor for A-SCA" type="text" value="none" help=""/>
+    <param name="scaling" label="Scaling to apply to dataMatrix" type="select" help="">
+	  <option value="none" selected="true">None</option>
+      <option value="pareto">pareto</option>
+      <option value="UV">UV</option>
+	</param>
+	<param name="nPerm" label="Number of permutation to perform to compute factor significance" type="select" help="">
+	  <option value="100" selected="true">100</option>
+      <option value="500">500</option>
+      <option value="1000">1000</option>
+	</param>
+	<param name="threshold" type="float" value="0.05" label="Threshold for factor significance (permutation test)" help="Must be between 0 and 1"/>
+  </inputs>
+  
+  <outputs>
+    <data name="sampleMetadata_out" label="${tool.name}_${sampleMetadata_in.name}" format="tabular" ></data>
+    <data name="variableMetadata_out" label="${tool.name}_${variableMetadata_in.name}" format="tabular" ></data>
+	<data name="figure" label="${tool.name}_figure.pdf" format="pdf"/>
+	<data name="information" label="${tool.name}_information.txt" format="txt"/>
+  </outputs>
+
+  <tests>
+    <test>
+      <param name="dataMatrix_in" value="input-dataMatrix.tsv"/>
+      <param name="sampleMetadata_in" value="input-sampleMetadata.tsv"/>
+      <param name="variableMetadata_in" value="input-variableMetadata.tsv"/>
+      <param name="scaling" value="pareto"/>
+      <param name="threshold" value="0.05"/>
+      <param name="nPerm" value="100"/>
+	  
+      <output name="asca_out" file="sampleMetadata_out.tsv" lines_diff="6"/>
+    </test>
+  </tests>
+
+  
+  <help><![CDATA[
+    
+.. class:: infomark
+    
+**Author** Marie Tremblay-Franco (W4M Core Development Team, MetaboHUB Toulouse, AXIOM) and Yann Guitton (W4M Core Development Team, Laberca, UM1329)
+    
+---------------------------------------------------
+    
+.. class:: infomark
+    
+**Tool updates**
+    
+See the **NEWS** section at the bottom of this page
+    
+---------------------------------------------------
+    
+============
+A-SCA
+============
+    
+-----------
+Description
+-----------
+    
+| **ASCA does PCA on the averages of the treatment levels for an experimental design
+| This tool makes use of the MetStaT R package. Please cite:
+| Tim Dorscheidt (2013). MetStaT: Statistical metabolomics tools. R package version 1.0. https://CRAN.R-project.org/package=MetStaT
+
+    
+    
+-----------------
+Workflow position
+-----------------
+    
+.. image:: ./static/images/asca_workflowPositionImage.png
+
+    
+-----------
+Input files
+-----------
+ 
++----------------------------+---------+
+| Parameter : num + label    |  Format |
++============================+=========+
+| 1 : Data matrix file       | tabular |
++----------------------------+---------+
+| 2 : Sample metadata file   | tabular |
++----------------------------+---------+
+| 3 : Variable metadata file | tabular |
++----------------------------+---------+
+
+| The **required formats** for the dataMatrix, sampleMetadata, and variableMetadata files are described in the **HowTo** entitled 'Format Data For Postprocessing' available on the main page of Workflow4Metabolomics.org (http://web11.sb-roscoff.fr/download/w4m/howto/w4m_HowToFormatDataForPostprocessing_v02.pdf)
+
+
+----------
+Parameters
+----------
+	  
+Data matrix file
+	| variable x sample **dataMatrix** tabular separated file of the numeric data matrix, with . as decimal, and NA for missing values; the table must not contain metadata apart from row and column names; the row and column names must be identical to the rownames of the sample and variable metadata, respectively (see below)
+	|
+
+Sample metadata file
+	| sample x metadata **sampleMetadata** tabular separated file of the numeric and/or character sample metadata, with . as decimal and NA for missing values
+	|
+	
+Variable metadata file
+	| variable x metadata **variableMetadata** tabular separated file of the numeric and/or character variable metadata, with . as decimal and NA for missing values
+	|
+
+Factor1
+	| Name of the sampleMetadata column containing the 1st factor for A-SCA
+	|
+
+Factor2
+	| Name of the sampleMetadata column containing the 2nd factor for A-SCA
+	|
+
+Scaling (default = none)
+	| Mean-centering followed either by pareto scaling (**pareto**), or unit-variance scaling (**UV**)
+	| 
+
+Permutation testing for A-SCA parameters: Number of permutations (default = 100)
+	| Number of random permutation on the results from ASCA. Calculate by repeating the ASCA analysis many times with permutated samples.
+	| 	
+	
+Threshold
+	| p-value significance threshold for permutation test
+	|
+
+------------
+Output files
+------------
+
+sampleMetadata_out.tabular
+	| sampleMetadata data file; may be identical to the input sampleMetadata in case no renaming of sample names nor re-ordering of samples (see the 'information' file for the presence/absence of modifications)
+	|
+
+variableMetadata_out.tabular
+	| variableMetadata data file; may be identical to the input variableMetadata in case no renaming of variable names nor re-ordering of variables (see the 'information' file for the presence/absence of modifications)
+	|
+
+figure.pdf
+	| Scree and score plots for significant parameter(s)
+	| 
+
+information.txt
+	| Text file with all messages when error(s) in formats are detected
+	|
+    
+---------------------------------------------------
+    
+---------------
+Working example
+---------------
+    
+.. class:: infomark
+  
+    
+---------------------------------------------------
+    
+----
+NEWS
+----
+
+   
+  ]]></help>
+  
+  <citations>
+    <citation type="doi">10.1093/bioinformatics/bti476</citation>
+    <citation type="doi">10.1002/cem.952</citation>
+  </citations>
+  
+</tool>
