@@ -1,0 +1,7 @@
+categories: [Metabolomics]
+description: '[Metabolomics][W4M][LC-MS][GC-MS][NMR] A-SCA - PCA on the averages of the treatment levels for an experimental design'
+homepage_url: http://workflow4metabolomics.org
+long_description: 'Part of the W4M project: http://workflow4metabolomics.org'
+name: asca
+owner: marie-tremblay-metatoul
+remote_repository_url: https://github.com/workflow4metabolomics/ascaw4m
