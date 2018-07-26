@@ -137,17 +137,18 @@ if (exists("result")) {
 	write.table(result[[4]],
 			file = listArguments$sampleMetadata_out,
 			quote = FALSE,
-			row.names = FALSE,
+			row.names = TRUE,
 			sep = "\t")
 
 	write.table(result[[5]],
 			file = listArguments$variableMetadata_out,
 			quote = FALSE,
-			row.names = FALSE,
+			row.names = TRUE,
 			sep = "\t")
 
 	# Graphical display for each significant parameter
 	print(result[[3]])
+	cat("\n p-value of Residuals must not be taken into account\n")
 	
 	if (any(result[[2]] < as.numeric(listArguments[["threshold"]])))
 	{
