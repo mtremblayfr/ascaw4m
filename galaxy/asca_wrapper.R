@@ -1,6 +1,6 @@
 #!/usr/bin/env Rscript
 
-###############################################################################
+###################################################################################################
 #
 # MetStaT ASCA.calculate function
 #
@@ -10,7 +10,7 @@
 # Version: 1.0
 #
 # Author (asca.calculate): Tim Dorscheidt
-# Author (wrapper & .r adaptation for workflow4metabolomics.org): M. Tremblay-Franco & Y. Guitton
+# Author (wrapper & .r adaptation for workflow4metabolomics.org): M. Tremblay-Franco & Y. Guitton #
 # 
 # Expected parameters from the commandline
 # input files:
@@ -27,7 +27,7 @@
 #             variableMetadata
 #			  Graphical outputs
 #			  Information text
-################################################################################
+###################################################################################################
 pkgs=c("MetStaT","batch","pcaMethods")
 for(pkg in pkgs) {
   suppressPackageStartupMessages( stopifnot( library(pkg, quietly=TRUE, logical.return=TRUE, character.only=TRUE)))
@@ -53,6 +53,7 @@ source_local <- function(fname) {
 #load asca_w4m function
 source_local("asca_w4m.R")
 source_local("ASCA.Calculate_w4m.R")
+source_local("ASCA.PlotScoresPerLevel_w4m.R")
 print("first loadings OK")
 
 ## libraries
@@ -124,7 +125,8 @@ varDF <- read.table(listArguments[["variableMetadata_in"]],
                     row.names = 1,
 					sep = "\t")
 
-result <- asca_w4m(xMN, samDF, c(listArguments[["factor1"]],listArguments[["factor2"]]), varDF, as.numeric(listArguments[["threshold"]]), scaling=listArguments[["scaling"]], listArguments[["nPerm"]])
+result <- asca_w4m(xMN, samDF, c(listArguments[["factor1"]],listArguments[["factor2"]]), varDF, as.numeric(listArguments[["threshold"]]), 
+                   scaling=listArguments[["scaling"]], listArguments[["nPerm"]])
 
 
 ##saving
@@ -145,6 +147,8 @@ if (exists("result")) {
 			sep = "\t")
 
 	# Graphical display for each significant parameter
+	print(result[[3]])
+	
 	if (any(result[[2]] < as.numeric(listArguments[["threshold"]])))
 	{
 		data.asca.permutation <- result[[2]]
@@ -152,27 +156,35 @@ if (exists("result")) {
 		
 		pdf(listArguments$figure, onefile=TRUE)
 		par(mfrow=c(1,2))
-		if (data.asca.permutation[3] < as.numeric(listArguments[["threshold"]])){
-			eigenvalues <- data.frame(1:(length(unique(design[,1]))*length(unique(design[,2]))), result[[1]]$'12'$svd$d[1:(length(unique(design[,1]))*length(unique(design[,2])))])
-			colnames(eigenvalues) <- c("PC", "Eigenvalue")
-			barplot(eigenvalues[,2], names.arg=eigenvalues[,1], ylab="Eigenvalue", xlab="Principal component")
-			ASCA.PlotScoresPerLevel(result[[1]], ee="12")
-		}else{
-		if (data.asca.permutation[1] < as.numeric(listArguments[["threshold"]])){
-			eigenvalues <- data.frame(1:length(unique(design[,1])), result[[1]]$'12'$svd$d[1:length(unique(design[,1]))])
-			colnames(eigenvalues) <- c("PC", "Eigenvalue")
-			barplot(eigenvalues[,2], names.arg=eigenvalues[,1], ylab="Eigenvalue", xlab="Principal component")
-			ASCA.PlotScoresPerLevel(result[[1]], ee="1")
+		if (data.asca.permutation[1] < as.numeric(listArguments[["threshold"]]))
+		{
+			eigenvalues <- data.frame(1:length(unique(design[,1])), result[[1]]$'1'$svd$var.explained[1:length(unique(design[,1]))])
+			colnames(eigenvalues) <- c("PC", "explainedVariance")
+			barplot(eigenvalues[,2], names.arg=eigenvalues[,1], ylab="% of explained variance", xlab="Principal component")
+			noms <- levels(as.factor(samDF[, listArguments$factor1]))
+			ASCA.PlotScoresPerLevel_w4m(result[[1]], ee="1", interaction=0, factorName=listArguments$factor1, factorModalite=noms)
 		}
 		if (data.asca.permutation[2] < as.numeric(listArguments[["threshold"]]))
-			eigenvalues <- data.frame(1:length(unique(design[,2])), result[[1]]$'12'$svd$d[1:length(unique(design[,2]))])
-			colnames(eigenvalues) <- c("PC", "Eigenvalue")
-			barplot(eigenvalues[,2], names.arg=eigenvalues[,1], ylab="Eigenvalue", xlab="Principal component")    
-			ASCA.PlotScoresPerLevel(result[[1]], ee="2")
+		{
+			eigenvalues <- data.frame(1:length(unique(design[,2])), result[[1]]$'2'$svd$var.explained[1:length(unique(design[,2]))])
+			colnames(eigenvalues) <- c("PC", "explainedVariance")
+			barplot(eigenvalues[,2], names.arg=eigenvalues[,1], ylab="% of explained variance", xlab="Principal component")    
+			noms <- levels(as.factor(samDF[, listArguments$factor2]))
+			ASCA.PlotScoresPerLevel_w4m(result[[1]], ee="2", interaction=0, factorName=listArguments$factor2, factorModalite=noms)
 		}
-		dev.off()
+  	if (data.asca.permutation[3] < as.numeric(listArguments[["threshold"]]))
+  	{
+  	  eigenvalues <- data.frame(1:(length(unique(design[,1]))*length(unique(design[,2]))), result[[1]]$'12'$svd$var.explained[1:(length(unique(design[,1]))*length(unique(design[,2])))])
+  	  colnames(eigenvalues) <- c("PC", "explainedVariance")
+  	  barplot(eigenvalues[,2], names.arg=eigenvalues[,1], ylab="% of explained variance", xlab="Principal component")
+  	  noms1 <- data.matrix(levels(as.factor(samDF[, listArguments$factor1])))
+  	  noms2 <- data.matrix(levels(as.factor(samDF[, listArguments$factor2])))
+  	  noms <- apply(noms1, 1, FUN=function(x){paste(x, "-", noms2, sep="")})
+  	  noms <- apply(noms, 1, FUN=function(x){c(noms)})
+  	  ASCA.PlotScoresPerLevel_w4m(result[[1]], ee="12", interaction=1, factorModalite=noms[,1])
+  	}
+    dev.off()
 	}
-	print(result[[3]])
 
 	tryCatch({
 	save(result, file="asca.RData");
