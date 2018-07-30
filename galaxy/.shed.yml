@@ -1,5 +1,5 @@
 categories: [Metabolomics]
-description: '[Metabolomics][W4M][LC-MS][GC-MS][NMR] A-SCA - PCA on the averages of the treatment levels for an experimental design'
+description: '[Metabolomics][W4M][LC-MS][GC-MS][NMR] A-SCA - Splitting of the total variance into independent blocks according to the experimental factors and multivariate analysis (SCA) of each block'
 homepage_url: http://workflow4metabolomics.org
 long_description: 'Part of the W4M project: http://workflow4metabolomics.org'
 name: asca
