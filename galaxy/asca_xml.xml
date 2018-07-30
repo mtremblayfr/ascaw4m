@@ -1,5 +1,5 @@
 <tool id="asca" name="ASCA" version="1.0.0">
-  <description>ASCA does PCA on the averages of the treatment levels for an experimental design</description>
+  <description>Splitting of the total variance into independent blocks according to the experimental factors and multivariate analysis (SCA) of each block</description>
   
   <!-- <requirements> -->
     <!-- <requirement type="package" version="1.1_4">r-batch</requirement> -->
@@ -102,7 +102,7 @@ A-SCA
 Description
 -----------
     
-| ASCA does PCA on the averages of the treatment levels for an experimental design, based on the MetStaT R package
+| ASCA splits variance into independent blocks according to the experimental factors and performs multivariate analysis (SCA) of each block
 |
 
 -----------------
@@ -307,11 +307,11 @@ Output files
 +----------------------+-------------------------+---------------------+
 
 
-
-    | **4) Example of ASCA_figure.pdf: pdf file** including Scree and Score plot only for significant factor(s)/interaction** 
+	| **4) Example of ASCA_figure.pdf: pdf file** including Scree, Score plot and barplot of leverage values only for significant factor(s)/interaction**
+	| Leverage: importance of a variable in the PCA model (Nueda et al. 2007)
 	
 	
-.. image:: BDAGroup_ASCA_figure.png
+.. image:: BDAGroup_ASCA_figure.tif
         :width: 600
 
 ----
@@ -324,6 +324,7 @@ NEWS
   <citations>
     <citation type="doi">10.1093/bioinformatics/bti476</citation>
     <citation type="doi">10.1002/cem.952</citation>
+    <citation type="doi">10.1093/bioinformatics/btm251</citation>
   </citations>
   
 </tool>

@@ -156,7 +156,7 @@ if (exists("result")) {
 		design <- data.matrix(samDF[, colnames(samDF) %in% c(listArguments[["factor1"]],listArguments[["factor2"]])])
 		
 		pdf(listArguments$figure, onefile=TRUE)
-		par(mfrow=c(1,2))
+		par(mfrow=c(1,3))
 		if (data.asca.permutation[1] < as.numeric(listArguments[["threshold"]]))
 		{
 			eigenvalues <- data.frame(1:length(unique(design[,1])), result[[1]]$'1'$svd$var.explained[1:length(unique(design[,1]))])
@@ -164,6 +164,11 @@ if (exists("result")) {
 			barplot(eigenvalues[,2], names.arg=eigenvalues[,1], ylab="% of explained variance", xlab="Principal component")
 			noms <- levels(as.factor(samDF[, listArguments$factor1]))
 			ASCA.PlotScoresPerLevel_w4m(result[[1]], ee="1", interaction=0, factorName=listArguments$factor1, factorModalite=noms)
+			Date.loadings <- data.matrix(result[[5]][,2:3])
+			Date.loadings.leverage <- diag(Date.loadings%*%t(Date.loadings))
+			names(Date.loadings.leverage) <- colnames(xMN)
+			Date.loadings.leverage <- sort(Date.loadings.leverage, decreasing=TRUE)
+			barplot(Date.loadings.leverage[Date.loadings.leverage > 0.001], main="PC1 loadings")
 		}
 		if (data.asca.permutation[2] < as.numeric(listArguments[["threshold"]]))
 		{
@@ -172,6 +177,11 @@ if (exists("result")) {
 			barplot(eigenvalues[,2], names.arg=eigenvalues[,1], ylab="% of explained variance", xlab="Principal component")    
 			noms <- levels(as.factor(samDF[, listArguments$factor2]))
 			ASCA.PlotScoresPerLevel_w4m(result[[1]], ee="2", interaction=0, factorName=listArguments$factor2, factorModalite=noms)
+			Date.loadings <- data.matrix(result[[5]][,4:5])
+			Date.loadings.leverage <- diag(Date.loadings%*%t(Date.loadings))
+			names(Date.loadings.leverage) <- colnames(xMN)
+			Date.loadings.leverage <- sort(Date.loadings.leverage, decreasing=TRUE)
+			barplot(Date.loadings.leverage[Date.loadings.leverage > 0.001], main="PC1 loadings")
 		}
   	if (data.asca.permutation[3] < as.numeric(listArguments[["threshold"]]))
   	{
@@ -183,6 +193,11 @@ if (exists("result")) {
   	  noms <- apply(noms1, 1, FUN=function(x){paste(x, "-", noms2, sep="")})
   	  noms <- apply(noms, 1, FUN=function(x){c(noms)})
   	  ASCA.PlotScoresPerLevel_w4m(result[[1]], ee="12", interaction=1, factorModalite=noms[,1])
+  	  Date.loadings <- data.matrix(result[[5]][,6:7])
+  	  Date.loadings.leverage <- diag(Date.loadings%*%t(Date.loadings))
+  	  names(Date.loadings.leverage) <- colnames(xMN)
+  	  Date.loadings.leverage <- sort(Date.loadings.leverage, decreasing=TRUE)
+  	  barplot(Date.loadings.leverage[Date.loadings.leverage > 0.001], main="PC1 loadings")
   	}
     dev.off()
 	}
