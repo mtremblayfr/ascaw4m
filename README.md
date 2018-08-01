@@ -1,4 +1,4 @@
-NMR preprocessing for Galaxy
+ASC-A for Galaxy
 ========================
 
 [![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io) [![Build Status](https://travis-ci.org/workflow4metabolomics/asca.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/asca)
