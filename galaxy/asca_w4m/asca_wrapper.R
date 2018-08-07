@@ -112,18 +112,21 @@ xMN <- t(as.matrix(read.table(listArguments[["dataMatrix_in"]],
                               header = TRUE,
                               row.names = 1,
                               sep = "\t")))
+varIdDM <- rownames(xMN)
 
 samDF <- read.table(listArguments[["sampleMetadata_in"]],
                     check.names = FALSE,
                     header = TRUE,
                     row.names = 1,
-					sep = "\t")
+          					sep = "\t")
+obsIdSMD <- rownames(samDF)
 
 varDF <- read.table(listArguments[["variableMetadata_in"]],
                     check.names = FALSE,
                     header = TRUE,
                     row.names = 1,
-					sep = "\t")
+          					sep = "\t")
+varIdVDM <- rownames(varDF)
 
 result <- asca_w4m(xMN, samDF, c(listArguments[["factor1"]],listArguments[["factor2"]]), varDF, as.numeric(listArguments[["threshold"]]), 
                    scaling=listArguments[["scaling"]], listArguments[["nPerm"]])
@@ -134,18 +137,18 @@ result <- asca_w4m(xMN, samDF, c(listArguments[["factor1"]],listArguments[["fact
 if (exists("result")) {
 	## writing output files
 	cat("\n\nWriting output files\n\n");
-	write.table(result[[4]],
-			file = listArguments$sampleMetadata_out,
-			quote = FALSE,
-			row.names = TRUE,
-			sep = "\t")
-
-	write.table(result[[5]],
-			file = listArguments$variableMetadata_out,
-			quote = FALSE,
-			row.names = TRUE,
-			sep = "\t")
-
+  write.table(data.frame(cbind(obsIdSMD, result[[4]])),
+              file = listArguments$sampleMetadata_out,
+              quote = FALSE,
+              row.names = FALSE,
+              sep = "\t")
+  
+  write.table(data.frame(cbind(varIdVDM, result[[5]])),
+              file = listArguments$variableMetadata_out,
+              quote = FALSE,
+              row.names = FALSE,
+              sep = "\t")
+  
 	# Graphical display for each significant parameter
 	print(result[[3]])
 	cat("\n p-value of Residuals must not be taken into account\n")
