@@ -38,7 +38,7 @@
     <param name="scaling" label="Scaling to apply to dataMatrix" type="select" help="">
 	  <option value="none" selected="true">None</option>
       <option value="pareto">pareto</option>
-      <option value="UV">UV</option>
+      <option value="uv">uv</option>
 	</param>
 	<param name="nPerm" label="Number of permutation to perform to compute factor significance" type="select" help="">
 	  <option value="100" selected="true">100</option>
