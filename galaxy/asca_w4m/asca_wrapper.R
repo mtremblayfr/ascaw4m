@@ -118,14 +118,14 @@ samDF <- read.table(listArguments[["sampleMetadata_in"]],
                     check.names = FALSE,
                     header = TRUE,
                     row.names = 1,
-          					sep = "\t")
+					          sep = "\t")
 obsIdSMD <- rownames(samDF)
 
 varDF <- read.table(listArguments[["variableMetadata_in"]],
                     check.names = FALSE,
                     header = TRUE,
                     row.names = 1,
-          					sep = "\t")
+					          sep = "\t")
 varIdVDM <- rownames(varDF)
 
 result <- asca_w4m(xMN, samDF, c(listArguments[["factor1"]],listArguments[["factor2"]]), varDF, as.numeric(listArguments[["threshold"]]), 
@@ -137,18 +137,18 @@ result <- asca_w4m(xMN, samDF, c(listArguments[["factor1"]],listArguments[["fact
 if (exists("result")) {
 	## writing output files
 	cat("\n\nWriting output files\n\n");
-  write.table(data.frame(cbind(obsIdSMD, result[[4]])),
-              file = listArguments$sampleMetadata_out,
-              quote = FALSE,
-              row.names = FALSE,
-              sep = "\t")
-  
-  write.table(data.frame(cbind(varIdVDM, result[[5]])),
-              file = listArguments$variableMetadata_out,
-              quote = FALSE,
-              row.names = FALSE,
-              sep = "\t")
-  
+	write.table(data.frame(cbind(obsIdSMD, result[[4]])),
+        			file = listArguments$sampleMetadata_out,
+        			quote = FALSE,
+        			row.names = FALSE,
+        			sep = "\t")
+
+	write.table(data.frame(cbind(varIdVDM, result[[5]])),
+        			file = listArguments$variableMetadata_out,
+        			quote = FALSE,
+        			row.names = FALSE,
+        			sep = "\t")
+
 	# Graphical display for each significant parameter
 	print(result[[3]])
 	cat("\n p-value of Residuals must not be taken into account\n")
@@ -167,11 +167,14 @@ if (exists("result")) {
 			barplot(eigenvalues[,2], names.arg=eigenvalues[,1], ylab="% of explained variance", xlab="Principal component")
 			noms <- levels(as.factor(samDF[, listArguments$factor1]))
 			ASCA.PlotScoresPerLevel_w4m(result[[1]], ee="1", interaction=0, factorName=listArguments$factor1, factorModalite=noms)
-			f1.loadings <- data.matrix(result[[5]][,2:3])
+
+			v1 <- paste(listArguments[["factor1"]],"_XLOAD-p1", sep="")
+			v2 <- paste(listArguments[["factor1"]],"_XLOAD-p2", sep="")
+			f1.loadings <- data.matrix(result[[5]][,c(v1, v2)])
 			f1.loadings.leverage <- diag(f1.loadings%*%t(f1.loadings))
 			names(f1.loadings.leverage) <- colnames(xMN)
 			f1.loadings.leverage <- sort(f1.loadings.leverage, decreasing=TRUE)
-			barplot(f1.loadings.leverage[f1.loadings.leverage > 0.001], main="PC1 loadings")
+			barplot(f1.loadings.leverage[f1.loadings.leverage > 0.001], main="Leverage values")
 		}
 		if (data.asca.permutation[2] < as.numeric(listArguments[["threshold"]]))
 		{
@@ -180,11 +183,14 @@ if (exists("result")) {
 			barplot(eigenvalues[,2], names.arg=eigenvalues[,1], ylab="% of explained variance", xlab="Principal component")    
 			noms <- levels(as.factor(samDF[, listArguments$factor2]))
 			ASCA.PlotScoresPerLevel_w4m(result[[1]], ee="2", interaction=0, factorName=listArguments$factor2, factorModalite=noms)
-			f2.loadings <- data.matrix(result[[5]][,4:5])
+
+			v1 <- paste(listArguments[["factor2"]],"_XLOAD-p1", sep="")
+			v2 <- paste(listArguments[["factor2"]],"_XLOAD-p2", sep="")
+			f2.loadings <- data.matrix(result[[5]][,c(v1, v2)])
 			f2.loadings.leverage <- diag(f2.loadings%*%t(f2.loadings))
 			names(f2.loadings.leverage) <- colnames(xMN)
 			f2.loadings.leverage <- sort(f2.loadings.leverage, decreasing=TRUE)
-			barplot(f2.loadings.leverage[f2.loadings.leverage > 0.001], main="PC1 loadings")
+			barplot(f2.loadings.leverage[f2.loadings.leverage > 0.001], main="Leverage values")
 		}
   	if (data.asca.permutation[3] < as.numeric(listArguments[["threshold"]]))
   	{
@@ -196,11 +202,14 @@ if (exists("result")) {
   	  noms <- apply(noms1, 1, FUN=function(x){paste(x, "-", noms2, sep="")})
   	  noms <- apply(noms, 1, FUN=function(x){c(noms)})
   	  ASCA.PlotScoresPerLevel_w4m(result[[1]], ee="12", interaction=1, factorModalite=noms[,1])
-  	  f1f2.loadings <- data.matrix(result[[5]][,6:7])
+  	  
+  	  v1 <- "Interact_XLOAD-p1"
+  	  v2 <- "Interact_XLOAD-p2"
+  	  f1f2.loadings <- data.matrix(result[[5]][, c(v1, v2)])
   	  f1f2.loadings.leverage <- diag(f1f2.loadings%*%t(f1f2.loadings))
   	  names(f1f2.loadings.leverage) <- colnames(xMN)
   	  f1f2.loadings.leverage <- sort(f1f2.loadings.leverage, decreasing=TRUE)
-  	  barplot(f1f2.loadings.leverage[f1f2.loadings.leverage > 0.001], main="PC1 loadings")
+  	  barplot(f1f2.loadings.leverage[f1f2.loadings.leverage > 0.001], main="Leverage values")
   	}
     dev.off()
 	}
