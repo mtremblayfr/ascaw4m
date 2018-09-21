@@ -1,7 +1,7 @@
 ASC-A for Galaxy
 ========================
 
-[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io) [![Build Status](https://travis-ci.org/workflow4metabolomics/asca.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/asca)
+[![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io) [![Build Status](https://travis-ci.org/workflow4metabolomics/ascaw4m.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/ascaw4m)
 
 Our project
 -----------
@@ -24,15 +24,13 @@ Dependencies using Conda
 ------------------------
 [![bioconda-badge](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg?style=flat-square)](http://bioconda.github.io)
 
-The main recipe: [https://github.com/bioconda/bioconda-recipes/tree/master/recipes/r-ptw](https://github.com/bioconda/bioconda-recipes/tree/master/recipes/r-ptw)
+The main recipe: [https://github.com/bioconda/bioconda-recipes/tree/master/recipes/r-metstat](https://github.com/bioconda/bioconda-recipes/tree/master/recipes/r-metstat)
 
 ```
 #To install miniconda2
 #http://conda.pydata.org/miniconda.html
-#To install the needed R library using conda:
-conda install r-batch r-MetStaT r-pcaMethods
 #To set an environment:
-conda create -n asca r-batch r-MetStaT r-pcaMethods
+conda create -n asca r-batch r-metstat bioconductor-pcaMethods
 
 #To activate the environment:
 . activate asca
@@ -42,7 +40,7 @@ conda create -n asca r-batch r-MetStaT r-pcaMethods
 
 Travis
 ------
-[![Build Status](https://travis-ci.org/workflow4metabolomics/asca.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/asca)
+[![Build Status](https://travis-ci.org/workflow4metabolomics/ascaw4m.svg?branch=master)](https://travis-ci.org/workflow4metabolomics/ascaw4m)
 
 Test and Deploy with Confidence. Easily sync your GitHub projects with Travis CI and you'll be testing your code in minutes!
 
