@@ -57,16 +57,16 @@
 
   <tests>
     <test>
-      <param name="dataMatrix_in" value="input-dataMatrix.tsv"/>
-      <param name="sampleMetadata_in" value="input-sampleMetadata.tsv"/>
-      <param name="variableMetadata_in" value="input-variableMetadata.tsv"/>
+      <param name="dataMatrix_in" value="choo_datamatrix.txt"/>
+      <param name="sampleMetadata_in" value="choo_samplemetadata.txt"/>
+      <param name="variableMetadata_in" value="choo_variablemetadata.txt"/>
 	  <param name="factor1" value="Date"/>
       <param name="factor2" value="Treatment"/>
       <param name="scaling" value="pareto"/>
       <param name="threshold" value="0.05"/>
       <param name="nPerm" value="1000"/>
 	  
-      <output name="asca_out" file="sampleMetadata_out.tsv" lines_diff="6"/>
+      <output name="sampleMetadata_out" file="ASCA_choo_samplemetadata.tsv" lines_diff="6"/>
     </test>
   </tests>
 
